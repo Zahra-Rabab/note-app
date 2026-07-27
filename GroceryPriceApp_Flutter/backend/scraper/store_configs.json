@@ -1,0 +1,34 @@
+{
+  "_instructions": "Fill this in once you've found a store's internal API using your browser's Network tab (see backend/scraper/HOW_TO_FIND_APIS.md). Leave a store's 'enabled' as false until you've filled in and tested its fields.",
+
+  "alfatah": {
+    "enabled": true,
+    "type": "dedicated",
+    "notes": "Uses backend/scraper/alfatah_scraper.py — reads the Shopify analytics JSON embedded in each category page. Set enabled to false to turn this off."
+  },
+
+  "naheed": {
+    "enabled": true,
+    "type": "jsonld",
+    "search_url_template": "https://www.naheed.pk/catalogsearch/result/index/?_q={query}&o={query}&q={query}",
+    "notes": "Reads schema.org Product JSON-LD that Naheed embeds for Google SEO (see jsonld_scraper.py). Best-effort: Naheed's product grid itself is drawn by JavaScript, so this only works if their search page also embeds JSON-LD in the initial HTML. If it returns nothing, the app still shows Naheed's manual price from prices.json — this scraper never breaks anything, it just adds a 'Naheed (live)' entry when it succeeds. Set enabled to false to turn it off entirely."
+  },
+
+  "metro": {
+    "enabled": true,
+    "type": "jsonld",
+    "search_url_template": "https://www.metro-online.pk/search/{query}",
+    "notes": "Same JSON-LD technique as Naheed. Metro's site is a Next.js app whose product grid is rendered client-side, so this is the most speculative of the three live scrapers — it depends on whether Metro's server-rendered <head> includes Product schema for SEO. If not, use HOW_TO_FIND_APIS.md to find Metro's real search API and either add a 'type: generic' entry below or ask for a dedicated scraper. Either way, the app falls back to Metro's manual price from prices.json when this returns nothing."
+  },
+
+  "example_store": {
+    "enabled": false,
+    "search_url_template": "https://example.com/api/search?q={query}",
+    "headers": {
+      "User-Agent": "Mozilla/5.0"
+    },
+    "results_path": ["data", "products"],
+    "name_field": "title",
+    "price_field": "price"
+  }
+}

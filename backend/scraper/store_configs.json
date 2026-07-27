@@ -1,0 +1,47 @@
+{
+  "_instructions": "Fill this in once you've found a store's internal API using your browser's Network tab (see backend/scraper/HOW_TO_FIND_APIS.md). Leave a store's 'enabled' as false until you've filled in and tested its fields.",
+
+  "alfatah": {
+    "enabled": true,
+    "type": "dedicated",
+    "notes": "Uses backend/scraper/alfatah_scraper.py — reads the Shopify analytics JSON embedded in each category page. Set enabled to false to turn this off."
+  },
+
+  "imtiaz": {
+    "enabled": true,
+    "type": "generic",
+    "search_url_template": "https://shop.imtiaz.com.pk/api/search-dish?restId=55126&rest_brId=54943&delivery_type=0&source=google&search={query}&start=0&limit=8",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    },
+    "results_path": ["data"],
+    "name_field": "name",
+    "price_field": "price",
+    "notes": "Blink-platform search API for Imtiaz's online store (branch rest_brId=54943). Confirmed working via manual browser testing on 2026-07-27 — returned real product/price data for 'milk'. Prices reflect this specific branch only, not necessarily all Imtiaz locations nationwide. Matching logic in generic_json_scraper.py is basic (substring match on product name) — may pick unrelated products (e.g. 'Milk Chews' candy, baby formula) for broad search terms. Worth spot-checking a few more products before trusting broadly."
+  },
+
+  "naheed": {
+    "enabled": true,
+    "type": "jsonld",
+    "search_url_template": "https://www.naheed.pk/catalogsearch/result/index/?_q={query}&o={query}&q={query}",
+    "notes": "Reads schema.org Product JSON-LD that Naheed embeds for Google SEO (see jsonld_scraper.py). Best-effort: Naheed's product grid itself is drawn by JavaScript, so this only works if their search page also embeds JSON-LD in the initial HTML. If it returns nothing, the app still shows Naheed's manual price from prices.json — this scraper never breaks anything, it just adds a 'Naheed (live)' entry when it succeeds. Set enabled to false to turn it off entirely."
+  },
+
+  "metro": {
+    "enabled": true,
+    "type": "jsonld",
+    "search_url_template": "https://www.metro-online.pk/search/{query}",
+    "notes": "Same JSON-LD technique as Naheed. Metro's site is a Next.js app whose product grid is rendered client-side, so this is the most speculative of the three live scrapers — it depends on whether Metro's server-rendered <head> includes Product schema for SEO. If not, use HOW_TO_FIND_APIS.md to find Metro's real search API and either add a 'type: generic' entry below or ask for a dedicated scraper. Either way, the app falls back to Metro's manual price from prices.json when this returns nothing."
+  },
+
+  "example_store": {
+    "enabled": false,
+    "search_url_template": "https://example.com/api/search?q={query}",
+    "headers": {
+      "User-Agent": "Mozilla/5.0"
+    },
+    "results_path": ["data", "products"],
+    "name_field": "title",
+    "price_field": "price"
+  }
+}
