@@ -21,6 +21,7 @@ class GroceryPriceApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Grocery Price List',
             themeMode: themeProvider.mode,
             theme: ThemeData(

@@ -118,13 +118,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 labelText: 'Item name (any language — e.g. Milk, doodh, دودھ)',
                 suffixIcon: _isSearching
                     ? const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      )
+                  padding: EdgeInsets.all(12),
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
                     : null,
               ),
             ),
@@ -174,15 +174,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 spacing: 6,
                 children: _match!.suggestions
                     .map((s) => ActionChip(
-                          label: Text(s.canonicalName!),
-                          onPressed: () => _pickSuggestion(s),
-                        ))
+                  label: Text(s.canonicalName!),
+                  onPressed: () => _pickSuggestion(s),
+                ))
                     .toList(),
               ),
             ] else if (_nameController.text.trim().isNotEmpty && !_isSearching) ...[
               const Text(
                 "No catalog match — this item will be added as-is. "
-                "You'll set its price manually.",
+                    "You'll set its price manually.",
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
@@ -216,10 +216,18 @@ class _AddItemDialogState extends State<AddItemDialog> {
           onPressed: _nameController.text.trim().isEmpty
               ? null
               : () {
-                  final unitToSend = _wantsUnit ? _selectedUnit : null;
-                  widget.onAdd(_nameController.text, _quantity, unitToSend);
-                  Navigator.pop(context);
-                },
+            final unitToSend = _wantsUnit ? _selectedUnit : null;
+            // IMPORTANT FIX: when the item matched a catalog product,
+            // send the canonical name (e.g. "Tea", "Flour (Atta)"),
+            // not whatever raw text the user typed (e.g. "tea", "atta").
+            // The backend's prices.json and Alfatah's category matching
+            // both key off the exact canonical name — sending raw user
+            // text silently broke price fetching for anything not
+            // typed with the exact same casing/wording as the catalog.
+            final nameToSend = matched ? _match!.canonicalName! : _nameController.text;
+            widget.onAdd(nameToSend, _quantity, unitToSend);
+            Navigator.pop(context);
+          },
           child: Text(widget.initialName != null ? 'Save' : 'Add'),
         ),
       ],

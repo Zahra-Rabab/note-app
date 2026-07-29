@@ -76,7 +76,7 @@ class PriceLookupResult {
 class ApiService {
   /// adb reverse tcp:5000 tcp:5000 forwards the phone's localhost:5000
   /// to the PC's localhost:5000 over USB — works regardless of Wi-Fi/firewall.
-  static const String baseUrl = 'http://127.0.0.1:5000';
+  static const String baseUrl = 'https://grocery-backend-912b8.containers.snapdeploy.app';
 
   /// Matches free-text (any language/spelling) to a known product.
   Future<ProductMatch> matchProduct(String query) async {

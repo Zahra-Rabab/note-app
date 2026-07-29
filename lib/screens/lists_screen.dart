@@ -18,7 +18,7 @@ class ListsScreen extends StatelessWidget {
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(labelText: 'List name (e.g. "Weekly groceries")'),
+          decoration: const InputDecoration(labelText: 'List name (e.g. "Groceries")'),
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
